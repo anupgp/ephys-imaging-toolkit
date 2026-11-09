@@ -1,0 +1,65 @@
+# =============================================================================
+# data_source_settings.example.toml  —  TEMPLATE, safe to commit to git
+# =============================================================================
+# Copy this file to "data_source_settings.toml" (same folder) and edit the paths
+# for your computer. The copy is git-ignored because paths differ per machine.
+#
+# The loader looks for the settings file in this order:
+#   1. the `settings_file=` argument you pass in Python
+#   2. the environment variable EPHYS_IMAGING_SETTINGS
+#   3. data_source_settings.toml in this project folder
+#   4. ~/.config/ephys_imaging_data_loader/data_source_settings.toml
+# =============================================================================
+
+[general]
+# Where recordings are loaded from when you do not say explicitly:
+#   "local" -> only from the local folders below (no internet needed)
+#   "box"   -> always from Box (downloads into the cache folder once)
+#   "auto"  -> use the local copy if it exists, otherwise fetch it from Box
+default_mode = "auto"
+
+# Files downloaded from Box are kept here so they are only downloaded once.
+cache_folder = "~/.cache/ephys_imaging_data_loader"
+# When the cache grows beyond this size, the least recently used files are removed.
+cache_size_limit_gb = 50
+
+[box]
+# A KEY=VALUE text file containing CLIENT_ID, CLIENT_SECRET and (optionally)
+# BOX_OAUTH_LOC (the folder holding the saved login tokens).
+credentials_file = "~/.config/ephys_imaging_data_loader/box_credentials"
+# Optional: folder holding the login token file "oauth_box_auth.json".
+# If empty, BOX_OAUTH_LOC from the credentials file is used, and if that folder
+# does not exist on this computer, the folder of the credentials file is used.
+token_folder = ""
+
+# -----------------------------------------------------------------------------
+# "Roots" are named top-level data folders. Each root can exist locally,
+# on Box, or both. Recordings are then addressed by root name + relative path,
+# e.g.  root="ephys_olympus2p", path="20260322/c1/26322010.abf"
+# so the same line of code works whether the data are local or on Box.
+# -----------------------------------------------------------------------------
+
+[roots.ephys_olympus2p]
+description = "Patch-clamp recordings (.abf) from the Olympus 2P rig"
+local_folder = "/path/to/data/olympus2p_ephys"
+box_folder_id = "123456789012"   # the number at the end of the Box folder URL
+
+[roots.imaging_olympus2p]
+description = "Two-photon images (.oib/.oif) from the Olympus FV1000 rig"
+local_folder = "/path/to/data/olympus2p_imaging"
+box_folder_id = "123456789012"   # the number at the end of the Box folder URL
+
+[roots.zeiss_lsm880]
+description = "Zeiss LSM880 line scans / z-stacks (.czi) with matching .abf files"
+local_folder = "/path/to/data/zeiss2p"
+box_folder_id = ""               # fill in the Box folder ID (number at the end of the Box URL)
+
+# -----------------------------------------------------------------------------
+# Experiment catalog: the spreadsheet (CSV) describing every recording
+# (date, neuron, dendrite, spine, ephys/imaging file ids, ISI, group ...).
+# It is only READ, never modified. Used by ExperimentCatalog / catalog.browse().
+# -----------------------------------------------------------------------------
+[catalog]
+experiment_details_csv = "/path/to/experiment_sheet.csv"
+ephys_root = "ephys_olympus2p"      # root (see [roots.*]) holding <expdate>/c<neuron>/<file>.abf
+imaging_root = "imaging_olympus2p"  # root holding <expdate>/c<neuron>/<ImageNNNN>.oib

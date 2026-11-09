@@ -1,0 +1,47 @@
+# =============================================================================
+# pyproject.toml — packaging information for the ephys_imaging_data_loader
+# =============================================================================
+# Installing this project in "editable" mode makes the package importable from
+# any notebook or script without adding folders to sys.path by hand:
+#
+#     python -m pip install -e .
+#
+# "Editable" means the installed package points at THIS folder, so any change
+# you make to the code is picked up the next time you import it (no reinstall).
+# =============================================================================
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ephys_imaging_data_loader"
+version = "0.1.0"
+description = "Load and view patch-clamp (Axon .abf) and two-photon imaging (Zeiss .czi, Olympus .oib/.oif) data, from local folders or from Box."
+readme = "README.md"
+# tomllib (used to read the settings file) is part of the standard library from 3.11.
+license = { text = "MIT" }
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.0",
+    "scipy>=1.11",        # Gaussian smoothing for z-projections
+    "matplotlib>=3.8",
+    "neo>=0.13",          # reads Axon .abf files (patch-clamp)
+    "oiffile>=2025.1",    # reads Olympus FluoView .oib/.oif files
+    "czifile>=2026.6",    # reads Zeiss .czi files (the 2026 API with .scenes/.sizes is required)
+    "tifffile>=2024.1",   # used internally by oiffile
+    "bokeh>=3.4",         # interactive plots in notebooks / browser
+    "panel>=1.9",         # widgets (sliders, selectors) around the Bokeh plots (uses label=)
+]
+
+[project.optional-dependencies]
+# Box cloud access is optional: the loader works fully offline without it.
+box = ["boxsdk>=10"]      # boxsdk 10.x provides the "box_sdk_gen" module
+test = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+include = ["ephys_imaging_data_loader*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

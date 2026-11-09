@@ -1,0 +1,25 @@
+# --- Python build / cache files ---------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# --- Editor backups -----------------------------------------------------------
+*~
+.ipynb_checkpoints/
+
+# --- Machine-specific settings and secrets (NEVER commit these) --------------
+# The real settings file contains local folder paths for this computer.
+# Commit only data_source_settings.example.toml.
+data_source_settings.toml
+# Box credentials / tokens
+.env
+*.env
+!box_credentials.example.env
+*_auth.json
+.box_credentials
+
+# --- Output written by the example notebooks and tests ------------------------
+example_outputs/
